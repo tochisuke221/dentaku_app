@@ -1,6 +1,6 @@
 <template>
   <div id="container">
-      <div class="title">スーパーコンピュータ スマとち計算機</div>
+      <div class="title">スーパーコンピュータ スマとち計算機!</div>
       <DisplayResult :result="result" :inputNum="inputNum" :funcMode="funcMode" :priorityCalcResult="priorityCalcResult"></DisplayResult>
     <div class="wrapper">
       <!-- 1行目 -->

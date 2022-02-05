@@ -1,7 +1,7 @@
 <template>
   <div id="container">
       <div class="title">スーパーコンピュータ スマとち計算機!</div>
-      <DisplayResult :result="result" :inputNum="inputNum" :funcMode="funcMode" :priorityCalcResult="priorityCalcResult"></DisplayResult>
+      <DisplayResult :result="result.slice(0, 9)" :inputNum="inputNum" :funcMode="funcMode" :priorityCalcResult="priorityCalcResult"></DisplayResult>
     <div class="wrapper">
       <!-- 1行目 -->
       <div><button id="explain" onclick="window.open('https://docs.google.com/presentation/d/1DCIWgj-jHTwUs4oTEZxnt5dEYvJvpRh_XWSOhqBVw90/edit?usp=sharing')">説明</button></div>

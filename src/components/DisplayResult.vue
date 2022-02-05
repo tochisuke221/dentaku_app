@@ -1,9 +1,6 @@
 <template>
   <div class="display-result">
     <h3>{{displayNumber}}</h3>
-    <h3>{{result}}</h3>
-    <h3>{{inputNum}}</h3>
-    <h3>{{priorityCalcResult}}</h3>
   </div>
 </template>
 

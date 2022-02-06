@@ -8,8 +8,8 @@
       <DisplayResult :result="result" :inputNum="inputNum" :funcMode="funcMode" :priorityCalcResult="priorityCalcResult"></DisplayResult>
     <div class="wrapper">
       <!-- 1行目 -->
-      <div class="btn" id="ac"><FunctionButton  :inputNum="inputNum" :func="'AC'" @func-click="updateResult($event)"></FunctionButton></div>
       <div class="btn"><FunctionButton :inputNum="inputNum" :func="'C'" @func-click="updateResult($event)"></FunctionButton></div>
+      <div class="btn" id="ac"><FunctionButton  :inputNum="inputNum" :func="'AC'" @func-click="updateResult($event)"></FunctionButton></div>
       <div class="btn"><FunctionButton :inputNum="inputNum" :func="'+/-'" @func-click="updateResult($event)"></FunctionButton></div>
       <div class="btn"><FunctionButton :inputNum="inputNum" :func="'÷'" @func-click="updateResult($event)"></FunctionButton></div>
       <!-- 2行目 -->
@@ -90,12 +90,20 @@ export default {
       this.inputNum += event;
     },
     updateResult(event){
-      // =で終了状態の場合はオールリセット
-      if(this.funcMode === "="){ return this.resetAllVariables(); }
+      // 最終計算符号が = で計算が終了状態のときは、全変数を初期化
+      if(this.funcMode === "="){ this.resetAllVariables(); }
 
+      // +/-ボタン機能
       if(event === '+/-'){
-        return this.inputNum = '-' + this.inputNum
+        if(this.inputNum){
+          return this.inputNum = this.inputNum[0] ==='-' ? this.inputNum.slice(1) : '-' + this.inputNum
+        }
+        if(this.priorityCalcResult){
+          return this.priorityCalcResult = this.priorityCalcResult[0] ==='-' ? this.priorityCalcResult.slice(1) : '-' + this.priorityCalcResult
+        }
+        return this.result = this.result[0] ==='-'? this.result.slice(1) : '-' + this.result
       }
+
       // AllClear機能
       if(event === 'AC'){
         return this.resetAllVariables();

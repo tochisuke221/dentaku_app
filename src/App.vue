@@ -86,6 +86,8 @@ export default {
       this.inputNum += event;
     },
     updateResult(event){
+      // =で終了状態の場合はオールリセット
+      if(this.funcMode === "="){ return this.resetAllVariables(); }
       // AllClear機能
       if(event === 'AC'){
         return this.resetAllVariables();

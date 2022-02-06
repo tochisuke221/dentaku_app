@@ -1,12 +1,16 @@
 <template>
   <div id="container">
-      <div class="title">スーパーコンピュータ スマとち計算機!</div>
+      <div class="title">
+        <a href="https://docs.google.com/presentation/d/1DCIWgj-jHTwUs4oTEZxnt5dEYvJvpRh_XWSOhqBVw90/edit?usp=sharing" target="_blank" rel="noopener noreferrer">
+          スーパーコンピュータ スマとち計算機!
+        </a>
+      </div>
       <DisplayResult :result="result" :inputNum="inputNum" :funcMode="funcMode" :priorityCalcResult="priorityCalcResult"></DisplayResult>
     <div class="wrapper">
       <!-- 1行目 -->
-      <div><button id="explain" onclick="window.open('https://docs.google.com/presentation/d/1DCIWgj-jHTwUs4oTEZxnt5dEYvJvpRh_XWSOhqBVw90/edit?usp=sharing')">説明</button></div>
-      <div class="btn"><FunctionButton :inputNum="inputNum" :func="'C'" @func-click="updateResult($event)"></FunctionButton></div>
       <div class="btn" id="ac"><FunctionButton  :inputNum="inputNum" :func="'AC'" @func-click="updateResult($event)"></FunctionButton></div>
+      <div class="btn"><FunctionButton :inputNum="inputNum" :func="'C'" @func-click="updateResult($event)"></FunctionButton></div>
+      <div class="btn"><FunctionButton :inputNum="inputNum" :func="'+/-'" @func-click="updateResult($event)"></FunctionButton></div>
       <div class="btn"><FunctionButton :inputNum="inputNum" :func="'÷'" @func-click="updateResult($event)"></FunctionButton></div>
       <!-- 2行目 -->
       <div class="btn"><NumberButton :number="number[7]" @num-click="updateVariableNums($event)"></NumberButton></div>
@@ -88,6 +92,10 @@ export default {
     updateResult(event){
       // =で終了状態の場合はオールリセット
       if(this.funcMode === "="){ return this.resetAllVariables(); }
+
+      if(event === '+/-'){
+        return this.inputNum = '-' + this.inputNum
+      }
       // AllClear機能
       if(event === 'AC'){
         return this.resetAllVariables();

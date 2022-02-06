@@ -60,8 +60,8 @@ export default {
   methods: {
     updateVariableNums(event){
       // 最終計算符号が = で計算が終了状態のときは、全変数を初期化
-      if(this.funcMode === "="){ return this.resetAllVariables(); }
-      if(this.funcMode === 'AC' || this.funcMode === '='){ return this.resetAllVariables(); }
+      if(this.funcMode === "="){ this.resetAllVariables(); }
+      if(this.funcMode === 'AC'){ return this.resetAllVariables(); }
       
 
       this.updateInputNumber(event);

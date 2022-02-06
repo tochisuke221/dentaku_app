@@ -116,7 +116,12 @@ export default {
       // 符号連打対応
       if(!this.inputNum){
         if((event === "×" || event === "÷") && !this.priorityCalcResult){
-          this.priorityCalcResult = "0"
+          if(this.result){
+            this.priorityCalcResult = this.result
+            this.result = "0"
+          }else{
+            this.priorityCalcResult = "0"
+          }
           this.priorityFuncMode = event
           return
         }

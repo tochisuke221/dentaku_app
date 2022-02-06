@@ -75,7 +75,7 @@ export default {
     },
     updateInputNumber(event){
       //桁数制限
-      if(this.inputNum.length === 9) return
+      if(this.inputNum.replace(/[^0-9]/g, '').length === 9) return
       if(this.inputNum === "0" && event === "0") return 
       if(this.inputNum.includes(".") && event === ".") return 
 
@@ -224,7 +224,7 @@ button {
 .wrapper {
   background: black;
   opacity: 0.9;
-  width:200px;
+  width:230px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   row-gap: 10px;

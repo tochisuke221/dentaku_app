@@ -104,8 +104,15 @@ export default {
 
       // 符号連打対応
       if(!this.inputNum){
+        if((event === "×" || event === "÷") && !this.priorityCalcResult){
+          this.priorityCalcResult = "0"
+          this.priorityFuncMode = event
+          this.lastInputNum = "0"
+          this.lastFuncMode = event
+          return
+        }
         if(event === '×' || event === '÷') {
-          return this.priorityFuncMode == event
+          return this.priorityFuncMode = event
         }
         return this.funcMode = event
       }

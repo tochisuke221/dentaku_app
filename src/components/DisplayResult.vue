@@ -24,7 +24,7 @@ export default{
       }
 
       if(this.priorityCalcResult){
-        if(this.priorityCalcResult.includes('e')){ return parseFloat(this.priorityCalcResult).toExponential(0).toString}
+        if(this.priorityCalcResult.includes('e')){ return parseFloat(this.priorityCalcResult).toExponential(0)}
         if(parseFloat(this.priorityCalcResult) < 1 && parseFloat(this.priorityCalcResult) >= 0){ return this.priorityCalcResult }
         return parseFloat(this.priorityCalcResult.slice(0, 9)).toLocaleString()
       }

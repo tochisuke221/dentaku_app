@@ -1,7 +1,7 @@
 <template>
   <div id="container">
       <div class="title">スーパーコンピュータ スマとち計算機!</div>
-      <DisplayResult :result="result.slice(0, 9)" :inputNum="inputNum" :funcMode="funcMode" :priorityCalcResult="priorityCalcResult"></DisplayResult>
+      <DisplayResult :result="result" :inputNum="inputNum" :funcMode="funcMode" :priorityCalcResult="priorityCalcResult"></DisplayResult>
     <div class="wrapper">
       <!-- 1行目 -->
       <div><button id="explain" onclick="window.open('https://docs.google.com/presentation/d/1DCIWgj-jHTwUs4oTEZxnt5dEYvJvpRh_XWSOhqBVw90/edit?usp=sharing')">説明</button></div>
@@ -86,10 +86,12 @@ export default {
       this.inputNum += event;
     },
     updateResult(event){
+      // AllClear機能
       if(event === 'AC'){
         return this.resetAllVariables();
       }
       
+      // Clear機能
       if(event === 'C'){
         return this.inputNum = "";
       }
@@ -100,9 +102,12 @@ export default {
         return 
       }
 
-      if(!this.inputNum){ 
-        this.funcMode = event
-        return 
+      // 符号連打対応
+      if(!this.inputNum){
+        if(event === '×' || event === '÷') {
+          return this.priorityFuncMode == event
+        }
+        return this.funcMode = event
       }
 
       //次の計算が×・÷は先にそっちを計算する。
@@ -155,16 +160,16 @@ export default {
       let val;
       switch(func){
         case "+":
-          val = Number(sum) + Number(num)
+          val = parseFloat(sum) + parseFloat(num)
           break;
         case "-":
-          val = Number(sum) - Number(num)
+          val = parseFloat(sum) - parseFloat(num)
           break;
         case "×":
-          val = Number(sum) * Number(num)
+          val = parseFloat(sum) * parseFloat(num)
           break;
         case "÷":
-          val = Number(sum) / Number(num)
+          val = parseFloat(sum) / parseFloat(num)
           break;
         case "=":
           break;

@@ -10,18 +10,23 @@ export default{
   computed: {
     displayResult(){
       if(isFinite(this.result)){
-        return Number(this.result).toLocaleString()
+        if(this.result.includes('e')){ return parseFloat(this.result).toExponential(0)}
+        if(parseFloat(this.result) < 1 && parseFloat(this.result) >= 0){ return this.result }
+        return parseFloat(this.result.slice(0, 9)).toLocaleString()
       }else{
         return "Error..(;_;)"
       }
     },
     displayNumber(){
       if(this.inputNum){
-        return Number(this.inputNum).toLocaleString()
+        if(parseFloat(this.inputNum) < 1 && parseFloat(this.inputNum) >= 0){ return this.inputNum }
+        return parseFloat(this.inputNum.slice(0, 9)).toLocaleString()
       }
 
       if(this.priorityCalcResult){
-        return Number(this.priorityCalcResult).toLocaleString()
+        if(this.priorityCalcResult.includes('e')){ return parseFloat(this.priorityCalcResult).toExponential(0).toString}
+        if(parseFloat(this.priorityCalcResult) < 1 && parseFloat(this.priorityCalcResult) >= 0){ return this.priorityCalcResult }
+        return parseFloat(this.priorityCalcResult.slice(0, 9)).toLocaleString()
       }
 
       return this.displayResult

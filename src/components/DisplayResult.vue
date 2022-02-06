@@ -10,6 +10,7 @@ export default{
   computed: {
     displayResult(){
       if(isFinite(this.result)){
+        if(this.result.match(/\d/g).length > 9){ return parseFloat(this.result).toExponential(0) }
         if(this.result.includes('e')){ return parseFloat(this.result).toExponential(0)}
         if(parseFloat(this.result) < 1 && parseFloat(this.result) >= 0){ return this.result }
         // -があるかないかで数値の方をどうするか決める
@@ -27,6 +28,7 @@ export default{
       }
 
       if(this.priorityCalcResult){
+        if(this.priorityCalcResult.match(/\d/g).length > 10){ return parseFloat(this.priorityCalcResult).toExponential(0) }
         if(this.priorityCalcResult.includes('e')){ return parseFloat(this.priorityCalcResult).toExponential(0)}
         if(parseFloat(this.priorityCalcResult) < 1 && parseFloat(this.priorityCalcResult) >= 0){ return this.priorityCalcResult }
         if(this.priorityCalcResult[0] === '-'){ return parseFloat(this.priorityCalcResult.slice(0, 10)).toLocaleString()}

@@ -48,11 +48,9 @@ function initialState(){
     ],
     result: "0",
     inputNum:"",
-    lastInputNum: "",
     priorityCalcResult:"", // 乗除の計算結果保管用   
     priorityFuncMode: "", // 乗除用の計算符号
     funcMode: "+",
-    lastFuncMode: "",
   }
 }
 
@@ -75,6 +73,7 @@ export default {
     },
     updateInputNumber(event){
       //桁数制限
+      if(this.inputNum.includes(".") && this.inputNum.replace(/[^0-9]/g, '').length === 7) return
       if(this.inputNum.replace(/[^0-9]/g, '').length === 9) return
       if(this.inputNum === "0" && event === "0") return 
       if(this.inputNum.includes(".") && event === ".") return 
@@ -114,19 +113,11 @@ export default {
         return this.inputNum = "";
       }
 
-      // = を連打した場合は最後の入力値と符号で計算を続ける。
-      if(!this.inputNum && event === "="){
-        this.result = this.calcNum(this.result, this.lastInputNum, this.lastFuncMode);
-        return 
-      }
-
       // 符号連打対応
       if(!this.inputNum){
         if((event === "×" || event === "÷") && !this.priorityCalcResult){
           this.priorityCalcResult = "0"
           this.priorityFuncMode = event
-          this.lastInputNum = "0"
-          this.lastFuncMode = event
           return
         }
         if(event === '×' || event === '÷') {
@@ -140,18 +131,12 @@ export default {
         if(!this.priorityCalcResult){
           // 符号が押される前まで計算を決定
           this.priorityCalcResult = this.inputNum
-          // 最後の入力値と符号を保管
-          this.lastInputNum = this.inputNum
-          this.lastFuncMode = this.priorityFuncMode
           // 初期化と符号更新
           this.priorityFuncMode = event
           this.inputNum = ""
         }else{
           // 符号が押される前まで計算を決定
           this.priorityCalcResult= this.calcNum(this.priorityCalcResult, this.inputNum, this.priorityFuncMode);
-          // 最後の入力値と符号を保管
-          this.lastInputNum = this.inputNum 
-          this.lastFuncMode = this.priorityFuncMode
           // 初期化と符号更新
           this.priorityFuncMode = event
           this.inputNum = ""
@@ -160,9 +145,6 @@ export default {
         if(!this.priorityCalcResult){
           // 符号が押される前まで計算を決定
           this.result=this.calcNum(this.result, this.inputNum, this.funcMode)
-          // 最後の入力値と符号を保管
-          this.lastInputNum = this.inputNum
-          this.lastFuncMode = this.funcMode
           // 初期化と符号更新
           this.inputNum = ""
           this.funcMode = event
@@ -170,9 +152,6 @@ export default {
           // 符号が押される前まで計算を決定
           this.priorityCalcResult = this.calcNum(this.priorityCalcResult, this.inputNum, this.priorityFuncMode); 
           this.result = this.calcNum(this.result, this.priorityCalcResult, this.funcMode); 
-          // 最後の入力値と符号を保管
-          this.lastInputNum = this.inputNum
-          this.lastFuncMode = this.priorityFuncMode
           // 初期化と符号更新
           this.priorityCalcResult = ""
           this.priorityFuncMode = ""
@@ -199,7 +178,10 @@ export default {
         case "=":
           break;
       }
-      return String(val);
+      //誤差を切る
+      if(String(val).match(/e/)){ return String(val)}
+
+      return String(Number(val.toFixed(9)));
     }
   },
   components: {

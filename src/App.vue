@@ -90,21 +90,20 @@ export default {
       
       this.inputNum = this.inputNum[0] ==='-' ? this.inputNum.slice(1) : '-' + this.inputNum
     },
-    // 符号連打対応
+    // 符号連打対応(入力値がない状態での符号変換)
     switchFuncMode(e){
       if(this.inputNum) return
+      if(this.priorityCalcResult) return 
+
+      // 加減モードに移行
       if(!isPriorityCalc(e)){ return this.funcMode = e}
 
-      if(!this.priorityCalcResult){
-        if(this.result){
-          this.priorityCalcResult = this.result 
-          this.result = "0"
-        }else{
-          this.priorityCalcResult = "0"
-        }
-      }
-
-      return this.priorityFuncMode = e
+      //乗除モードに移行
+      this.priorityCalcResult = this.result
+      this.priorityFuncMode = e
+      // 初期化
+      this.result = "0"
+      this.funcMode = "+"
 
     // if(!this.inputNum){
     //     if((isPriorityCalc(e)) && !this.priorityCalcResult){

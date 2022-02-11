@@ -8,9 +8,9 @@
       <DisplayResult :result="result" :inputNum="inputNum" :funcMode="funcMode" :priorityCalcResult="priorityCalcResult"></DisplayResult>
     <div class="wrapper">
       <!-- 1行目 -->
-      <div class="btn"><FunctionButton :inputNum="inputNum" :func="'C'" @func-click="updateResult($event)"></FunctionButton></div>
-      <div class="btn" id="ac"><FunctionButton  :inputNum="inputNum" :func="'AC'" @func-click="updateResult($event)"></FunctionButton></div>
-      <div class="btn"><FunctionButton :inputNum="inputNum" :func="'+/-'" @func-click="updateResult($event)"></FunctionButton></div>
+      <div class="btn"><FunctionButton :inputNum="inputNum" :func="'C'" @func-click="clearInputNum($event)"></FunctionButton></div>
+      <div class="btn" id="ac"><FunctionButton  :inputNum="inputNum" :func="'AC'" @func-click="clearAll($event)"></FunctionButton></div>
+      <div class="btn"><FunctionButton :inputNum="inputNum" :func="'+/-'" @func-click="reverseCode($event)"></FunctionButton></div>
       <div class="btn"><FunctionButton :inputNum="inputNum" :func="'÷'" @func-click="updateResult($event)"></FunctionButton></div>
       <!-- 2行目 -->
       <div class="btn"><NumberButton :number="number[7]" @num-click="updateVariableNums($event)"></NumberButton></div>
@@ -60,140 +60,161 @@ export default {
     return initialState()
   },
   methods: {
-    updateVariableNums(event){
-      // 最終計算符号が = で計算が終了状態のときは、全変数を初期化
-      if(this.funcMode === "="){ this.resetAllVariables(); }
-      if(this.funcMode === 'AC'){ return this.resetAllVariables(); }
-      
+    updateVariableNums(e){
+      // 最終計算符号が = または ACの時は全変数を初期化
+      if(this.funcMode === "=" || this.funcMode === 'AC' ){ this.resetAllVariables(); }
 
-      this.updateInputNumber(event);
+      this.updateInputNumber(e);
     },
     resetAllVariables(){
       Object.assign(this.$data, initialState());
     },
-    updateInputNumber(event){
-      //桁数制限
-      // if(this.inputNum.includes(".") && this.inputNum.replace(/[^0-9]/g, '').length === 7) return
-      if(this.inputNum.replace(/[^0-9]/g, '').length === 9) return
-      if(this.inputNum === "0" && event === "0") return 
-      if(this.inputNum.includes(".") && event === ".") return 
+    updateInputNumber(e){
+      if(!isCorrectInputNum(this.inputNum, e)) return
+      // 特殊パターン：最初にいきなり.押した場合
+      if(this.inputNum === "" && e === "."){ e = "0." }
 
-      if(this.inputNum === "" && event === "."){
-        event = "0."
-      }
-
-      if(this.inputNum === "0" && event !== "."){
-        this.inputNum = "";
-      }
-
-      this.inputNum += event;
+      this.inputNum += e;
     },
-    updateResult(event){
+    // Clear機能
+    clearInputNum(){
+      this.inputNum = "";
+    },
+    // AllClear機能
+    clearAll(){
+      this.resetAllVariables();
+    },
+    // +/-ボタン機能
+    reverseCode(){
+      if(!this.inputNum) return this.inputNum = "-0"
+      
+      this.inputNum = this.inputNum[0] ==='-' ? this.inputNum.slice(1) : '-' + this.inputNum
+    },
+    // 符号連打対応
+    switchFuncMode(e){
+      if(this.inputNum) return
+      if(!isPriorityCalc(e)){ return this.funcMode = e}
+
+      if(!this.priorityCalcResult){
+        if(this.result){
+          this.priorityCalcResult = this.result 
+          this.result = "0"
+        }else{
+          this.priorityCalcResult = "0"
+        }
+      }
+
+      return this.priorityFuncMode = e
+
+    // if(!this.inputNum){
+    //     if((isPriorityCalc(e)) && !this.priorityCalcResult){
+    //       if(this.result){
+    //         this.priorityCalcResult = this.result
+    //         this.result = "0"
+    //       }else{
+    //         this.priorityCalcResult = "0"
+    //       }
+    //       this.priorityFuncMode = e
+    //       return
+    //     }
+    //     if(e === '×' || e === '÷') {
+    //       return this.priorityFuncMode = e
+    //     }
+    //     return this.funcMode = e
+    //   }
+    },
+
+
+    updateResult(e){
       // 最終計算符号が = で計算が終了状態のときは、全変数を初期化
       if(this.funcMode === "="){ this.resetAllVariables(); }
 
-      // +/-ボタン機能
-      if(event === '+/-'){
-        if(this.inputNum){
-          return this.inputNum = this.inputNum[0] ==='-' ? this.inputNum.slice(1) : '-' + this.inputNum
-        }
-        if(this.priorityCalcResult){
-          return this.priorityCalcResult = this.priorityCalcResult[0] ==='-' ? this.priorityCalcResult.slice(1) : '-' + this.priorityCalcResult
-        }
-        return this.result = this.result[0] ==='-'? this.result.slice(1) : '-' + this.result
-      }
-
-      // AllClear機能
-      if(event === 'AC'){
-        return this.resetAllVariables();
-      }
-      
-      // Clear機能
-      if(event === 'C'){
-        return this.inputNum = "";
-      }
-
-      // 符号連打対応
-      if(!this.inputNum){
-        if((event === "×" || event === "÷") && !this.priorityCalcResult){
-          if(this.result){
-            this.priorityCalcResult = this.result
-            this.result = "0"
-          }else{
-            this.priorityCalcResult = "0"
-          }
-          this.priorityFuncMode = event
-          return
-        }
-        if(event === '×' || event === '÷') {
-          return this.priorityFuncMode = event
-        }
-        return this.funcMode = event
-      }
+      // 符号連打時の符号切り替え
+      this.switchFuncMode(e);
 
       //次の計算が×・÷は先にそっちを計算する。
-      if(event === "×" || event === "÷"){
-        if(!this.priorityCalcResult){
-          // 符号が押される前まで計算を決定
-          this.priorityCalcResult = this.inputNum
-          // 初期化と符号更新
-          this.priorityFuncMode = event
-          this.inputNum = ""
-        }else{
-          // 符号が押される前まで計算を決定
-          this.priorityCalcResult= this.calcNum(this.priorityCalcResult, this.inputNum, this.priorityFuncMode);
-          // 初期化と符号更新
-          this.priorityFuncMode = event
-          this.inputNum = ""
-        }
+      isPriorityCalc(e) ? this.executePriorityCalc(e) : this.executeCalc(e)
+    },
+    executePriorityCalc(e){
+      if(!this.inputNum) return 
+      if(!this.priorityCalcResult){
+        // 乗除計算の最初は、入力値 = 現在の結果とする
+        this.priorityCalcResult = this.inputNum
+        this.priorityFuncMode = e
+
+        //初期化
+        this.inputNum = ""
       }else{
-        if(!this.priorityCalcResult){
-          // 符号が押される前まで計算を決定
-          this.result=this.calcNum(this.result, this.inputNum, this.funcMode)
-          // 初期化と符号更新
-          this.inputNum = ""
-          this.funcMode = event
-        }else{
-          // 符号が押される前まで計算を決定
-          this.priorityCalcResult = this.calcNum(this.priorityCalcResult, this.inputNum, this.priorityFuncMode); 
-          this.result = this.calcNum(this.result, this.priorityCalcResult, this.funcMode); 
-          // 初期化と符号更新
-          this.priorityCalcResult = ""
-          this.priorityFuncMode = ""
-          this.inputNum = ""
-          this.funcMode = event
-        }
+        // 符号が押される前まで計算を決定
+        this.priorityCalcResult= calcNum(this.priorityCalcResult, this.inputNum, this.priorityFuncMode);
+        this.priorityFuncMode = e
+        
+        // 初期化
+        this.inputNum = ""
       }
     },
-    calcNum(sum, num,func){
-      let val;
-      switch(func){
-        case "+":
-          val = parseFloat(sum) + parseFloat(num)
-          break;
-        case "-":
-          val = parseFloat(sum) - parseFloat(num)
-          break;
-        case "×":
-          val = parseFloat(sum) * parseFloat(num)
-          break;
-        case "÷":
-          val = parseFloat(sum) / parseFloat(num)
-          break;
-        case "=":
-          break;
+    executeCalc(e){
+      if(!this.inputNum) return 
+      if(!this.priorityCalcResult){
+        // 乗除計算の結果が存在していなければ、現在の結果に単純に加減計算
+        this.result=calcNum(this.result, this.inputNum, this.funcMode)
+        this.funcMode = e
+        // 初期化
+        this.inputNum = ""
+      }else{
+        // 乗除計算の結果が存在すれば、最新の結果 = 乗除計算結果 + 現在の加減結果
+        this.priorityCalcResult = calcNum(this.priorityCalcResult, this.inputNum, this.priorityFuncMode); 
+        this.result = calcNum(this.result, this.priorityCalcResult, this.funcMode); 
+        this.funcMode = e
+        // 初期化と符号更新
+        this.priorityCalcResult = ""
+        this.priorityFuncMode = ""
+        this.inputNum = ""
       }
-      //誤差を切る
-      if(String(val).match(/e/)){ return String(val)}
-
-      return String(Number(val.toFixed(9)));
-    }
+    },
   },
   components: {
     NumberButton,
     FunctionButton,
     DisplayResult,
   }
+}
+
+// 計算を行う
+function calcNum(sum, num,func){
+  let val;
+  switch(func){
+    case "+":
+      val = parseFloat(sum) + parseFloat(num)
+      break;
+    case "-":
+      val = parseFloat(sum) - parseFloat(num)
+      break;
+    case "×":
+      val = parseFloat(sum) * parseFloat(num)
+      break;
+    case "÷":
+      val = parseFloat(sum) / parseFloat(num)
+      break;
+    case "=":
+      break;
+  }
+  //誤差を切る
+  if(String(val).match(/e/)){ return String(val)}
+  return String(Number(val.toFixed(9)));
+}
+
+// 入力値が正しい形かチェック
+function isCorrectInputNum(num, input){
+  if(num.replace(/[^0-9]/g, '').length === 9) return false
+  if((num === "0" || num === "-0") && input === "0") return false
+  if(num.includes(".") && input === ".") return false
+
+  return true
+}
+
+function isPriorityCalc(code){
+  return code === "×" || code === "÷"
 }
 </script>
 

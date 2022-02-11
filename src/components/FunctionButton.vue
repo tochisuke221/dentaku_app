@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button :id="'button' + func" :class="disabledClearBtn()" @click="updateFuncMode()">{{func}}</button>
+    <button :id="'button' + func" :class="disabledBtn()" @click="updateFuncMode()">{{func}}</button>
   </div>
 </template>
 
@@ -12,7 +12,7 @@ export default{
       this.$emit("func-click", this.func)
     },
     //動的にクラスを付与（Cボタンの非活性）
-    disabledClearBtn(){
+    disabledBtn(){
       if(!this.inputNum && this.func === 'C'){ return "disabled" }
     }
   }

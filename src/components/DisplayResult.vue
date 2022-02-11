@@ -1,6 +1,8 @@
 <template>
   <div class="display-result">
-    <h3>{{displayNumber}}</h3>
+    <h3>
+      {{ displayNumber }}
+    </h3>
   </div>
 </template>
 
@@ -8,39 +10,47 @@
 export default{
   props:["result", "inputNum", "priorityCalcResult"],
   computed: {
-    displayResult(){
-      if(isFinite(this.result)){
-        //小数点対応
-        if(Math.abs(this.result) < 1){ return fixSmallNum(this.result)  }
-        
-        // -があるかないかで数値の方をどうするか決める
-        if(this.result[0] === '-'){ return parseFloat(this.result.slice(0, 10)).toLocaleString()}
-        return parseFloat(this.result.slice(0, 9)).toLocaleString()
-      }else{
-        return "Error..(;_;)"
-      }
-    },
     displayNumber(){
-      if(this.inputNum){
-        if(Math.abs(this.inputNum) < 1 ){ return this.inputNum }
-
-        const numLength = this.inputNum[0] === '-' ? 10 : 9
-        return parseFloat(this.inputNum.slice(0, numLength)).toLocaleString()
-      }
-
-      if(this.priorityCalcResult){
-        //小数点対応
-        if(Math.abs(this.priorityCalcResult) < 1){ return fixSmallNum(this.priorityCalcResult)  }
-
-        if(this.priorityCalcResult[0] === '-'){ return parseFloat(this.priorityCalcResult.slice(0, 10)).toLocaleString()}
-        return parseFloat(this.priorityCalcResult.slice(0, 9)).toLocaleString()
-      }
-
-      return this.displayResult
+      return fixedInputNum(this.inputNum) || fixedPriorityCalcResult(this.priorityCalcResult) || fixedResult(this.result)
     },
   }
 }
 
+//結果を表示
+function fixedResult(num){
+  if(!isFinite(num)){ return  "Error..." }
+  //小数点対応
+  if(Math.abs(num) < 1){ return fixSmallNum(num)  }    
+  // 大きい数字対応
+  if(Math.abs(num) > 999999999){ return parseFloat(num).toExponential(0) }
+ 
+//  const numLength = num[0] === '-' ? 10 : 9
+ return parseFloat(num).toLocaleString()
+}
+
+// 入力値を表示
+function fixedInputNum(num){
+  if(num){
+    // 小数点対応
+    if(Math.abs(num) < 1 ){ return num }
+    // const numLength = num[0] === '-' ? 10 : 9
+    return parseFloat(num).toLocaleString()
+  }
+}
+
+// 乗除の途中結果を表示
+function fixedPriorityCalcResult(num){
+  if(num){
+    //小数点対応
+    if(Math.abs(num) < 1){ return fixSmallNum(num)  }
+    //大きい数字対応
+    if(Math.abs(num) > 999999999){ return parseFloat(num).toExponential(0) }
+    
+    return parseFloat(num).toLocaleString()
+  }
+}
+
+// 0以外で絶対値が0.00000001より小さいものを指数表示に変化する
 function fixSmallNum(num){
   if(Math.abs(num) === 0){ return 0}
   if(Math.abs(num) < 0.00000001){ return  parseFloat(num).toExponential(0) }
@@ -48,6 +58,7 @@ function fixSmallNum(num){
   return trimmingZero(num)
 }
 
+// ex. 0.0012300 → 0.00123
 function trimmingZero(str){
   const num = String(parseFloat(str).toFixed(8))
   let end = num.length - 1;

@@ -2,7 +2,7 @@
   <div id="container">
       <div class="title">
         <a href="https://docs.google.com/presentation/d/1DCIWgj-jHTwUs4oTEZxnt5dEYvJvpRh_XWSOhqBVw90/edit?usp=sharing" target="_blank" rel="noopener noreferrer">
-          スーパーコンピュータ スマとち計算機!
+          電卓
         </a>
       </div>
       <DisplayResult :result="result" :inputNum="inputNum" :funcMode="funcMode" :priorityCalcResult="priorityCalcResult"></DisplayResult>
@@ -73,7 +73,7 @@ export default {
     },
     updateInputNumber(event){
       //桁数制限
-      if(this.inputNum.includes(".") && this.inputNum.replace(/[^0-9]/g, '').length === 7) return
+      // if(this.inputNum.includes(".") && this.inputNum.replace(/[^0-9]/g, '').length === 7) return
       if(this.inputNum.replace(/[^0-9]/g, '').length === 9) return
       if(this.inputNum === "0" && event === "0") return 
       if(this.inputNum.includes(".") && event === ".") return 

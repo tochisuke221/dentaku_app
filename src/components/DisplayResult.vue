@@ -10,9 +10,12 @@ export default{
   computed: {
     displayResult(){
       if(isFinite(this.result)){
-        if(this.result.match(/\d/g).length > 9){ return parseFloat(this.result).toExponential(0) }
-        if(this.result.includes('e')){ return parseFloat(this.result).toExponential(0)}
-        if(parseFloat(this.result) < 1 && parseFloat(this.result) > -1){ return this.result }
+        //if(this.result.match(/0/g).length > 7){ return parseFloat(this.result).toExponential(0) }
+        //if(this.result.includes('e')){ return parseFloat(this.result).toExponential(0)}
+        //小数点対応
+        if(Math.abs(this.result) === 0){ return 0}
+        if(Math.abs(this.result) < 0.00000001){ return  parseFloat(this.result).toExponential(0) }
+        if(parseFloat(this.result) < 1 && parseFloat(this.result) > -1){ return trimmingZero(this.result) }
         // -があるかないかで数値の方をどうするか決める
         if(this.result[0] === '-'){ return parseFloat(this.result.slice(0, 10)).toLocaleString()}
         return parseFloat(this.result.slice(0, 9)).toLocaleString()
@@ -28,16 +31,26 @@ export default{
       }
 
       if(this.priorityCalcResult){
-        if(this.priorityCalcResult.match(/\d/g).length > 10){ return parseFloat(this.priorityCalcResult).toExponential(0) }
-        if(this.priorityCalcResult.includes('e')){ return parseFloat(this.priorityCalcResult).toExponential(0)}
-        if(parseFloat(this.priorityCalcResult) < 1 && parseFloat(this.priorityCalcResult) > -1){ return this.priorityCalcResult }
+        //if(this.priorityCalcResult.match(/0/g).length > 10){ return parseFloat(this.priorityCalcResult).toExponential(0) }
+        //if(this.priorityCalcResult.includes('e')){ return parseFloat(this.priorityCalcResult).toExponential(0)}
+        //小数点対応
+        if(Math.abs(this.priorityCalcResult) < 0.00000001){ return  parseFloat(this.priorityCalcResult).toExponential(0) }
+        if(parseFloat(this.priorityCalcResult) < 1 && parseFloat(this.priorityCalcResult) > -1){ return trimmingZero(this.priorityCalcResult)  }
         if(this.priorityCalcResult[0] === '-'){ return parseFloat(this.priorityCalcResult.slice(0, 10)).toLocaleString()}
         return parseFloat(this.priorityCalcResult.slice(0, 9)).toLocaleString()
       }
 
       return this.displayResult
-    }
+    },
   }
+}
+
+function trimmingZero(str){
+  const num = String(parseFloat(str).toFixed(8))
+  let end = num.length - 1;
+  while (num.charAt(end)==='0') end--;
+
+  return num.slice(0, end + 1);
 }
 </script>
 

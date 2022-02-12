@@ -94,6 +94,10 @@ export default {
     },
     // +/-ボタン機能
     reverseCode(){
+      // 計算終了後だけは、その結果に対して符号転換を行う
+      if(this.funcMode === "="){
+        return this.result = this.result[0] ==='-' ? this.result.slice(1) : '-' + this.result
+      }
       if(!this.inputNum) return this.inputNum = "-0"
       
       this.inputNum = this.inputNum[0] ==='-' ? this.inputNum.slice(1) : '-' + this.inputNum
@@ -113,8 +117,6 @@ export default {
       this.result = "0"
       this.funcMode = "+"
     },
-
-
     updateResult(e){
       // 最終計算符号が = で計算が終了状態のときは、全変数を初期化
       if(this.funcMode === "="){ this.resetVariablesExceptResult(); }

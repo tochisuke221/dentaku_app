@@ -63,6 +63,8 @@ export default {
   computed: {
     addWarning(){
       if(this.inputNum.replace(/[^0-9]/g, '').length === 8) return "warning"
+      
+      return null
     },
   },
   methods: {

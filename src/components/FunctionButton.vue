@@ -11,6 +11,7 @@ export default{
     //動的にクラスを付与（Cボタンの非活性）
     disabledBtn(){
       if(!this.inputNum && this.func === 'C'){ return "disabled" }
+      return null
     }
   },
   methods:{

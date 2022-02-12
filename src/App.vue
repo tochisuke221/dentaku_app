@@ -117,13 +117,18 @@ export default {
 
     updateResult(e){
       // 最終計算符号が = で計算が終了状態のときは、全変数を初期化
-      if(this.funcMode === "="){ this.resetAllVariables(); }
+      if(this.funcMode === "="){ this.resetVariablesExceptResult(); }
 
       // 符号連打時の符号切り替え
       this.switchFuncMode(e);
 
       //次の計算が×・÷は先にそっちを計算する。
       isPriorityCalc(e) ? this.executePriorityCalc(e) : this.executeCalc(e)
+    },
+    resetVariablesExceptResult(){
+      const tmpResult = this.result
+      Object.assign(this.$data, initialState());
+      this.result = tmpResult
     },
     executePriorityCalc(e){
       if(!this.inputNum) return 

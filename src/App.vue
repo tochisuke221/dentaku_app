@@ -105,17 +105,28 @@ export default {
     // 符号連打対応(入力値がない状態での符号変換)
     switchFuncMode(e){
       if(this.inputNum) return
-      if(this.priorityCalcResult) return 
+      if(this.priorityCalcResult){
+         //乗除加減モードに移行
+         if(isPriorityCalc(e)){ return this.priorityFuncMode = e}
 
-      // 加減モードに移行
-      if(!isPriorityCalc(e)){ return this.funcMode = e}
-
-      //乗除モードに移行
-      this.priorityCalcResult = this.result
-      this.priorityFuncMode = e
-      // 初期化
-      this.result = "0"
-      this.funcMode = "+"
+         //加減モードに移行
+         this.result = calcNum(this.result, this.priorityCalcResult, this.funcMode)
+         this.funcMode = e
+         //初期化
+         this.priorityCalcResult = ""
+         this.priorityFuncMode = ""
+      }else{
+        // 加減モードに移行
+        if(!isPriorityCalc(e)){ return this.funcMode = e}
+  
+        //乗除モードに移行
+        this.priorityCalcResult = this.result
+        this.priorityFuncMode = e
+        // 初期化
+        this.result = "0"
+        this.funcMode = "+"
+      }
+      
     },
     updateResult(e){
       // 最終計算符号が = で計算が終了状態のときは、全変数を初期化

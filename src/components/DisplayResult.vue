@@ -25,7 +25,8 @@ function fixedResult(num){
   if(Math.abs(num) > 999999999){ return parseFloat(num).toExponential(0) }
  
 //  const numLength = num[0] === '-' ? 10 : 9
- return parseFloat(num).toLocaleString( undefined, { maximumFractionDigits: [8] })
+//  return parseFloat(num).toLocaleString( undefined, { maximumFractionDigits: [8] })
+  return fixNormalNum(num)
 }
 
 // 入力値を表示
@@ -52,8 +53,20 @@ function fixedPriorityCalcResult(num){
     //大きい数字対応
     if(Math.abs(num) > 999999999){ return parseFloat(num).toExponential(0) }
     
-    return parseFloat(num).toLocaleString( undefined, { maximumFractionDigits: [8] })
+    // return parseFloat(num).toLocaleString( undefined, { maximumFractionDigits: [8] })
+    return fixNormalNum(num)
   }
+}
+
+// 9桁に収まるように加工する ex. 992,324,911.023456 → 992,324,911
+function fixNormalNum(num){
+  const numPart = num.split('.')
+  const smallLen =  9 - numPart[0].length
+
+  // 整数または整数部分しか表示出来ない場合
+  if(smallLen === 0 || !numPart[1]) return parseFloat(numPart[0]).toLocaleString()
+
+  return parseFloat(numPart[0]).toLocaleString() + '.' + numPart[1].slice(0, smallLen)
 }
 
 // 0以外で絶対値が0.00000001より小さいものを指数表示に変化する

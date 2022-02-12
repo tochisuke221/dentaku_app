@@ -1,20 +1,22 @@
 <template>
   <div>
-    <button :id="'button' + func" :class="disabledBtn()" @click="updateFuncMode()">{{func}}</button>
+    <button :id="'button' + func" :class="disabledBtn" @click="updateFuncMode()">{{func}}</button>
   </div>
 </template>
 
 <script>
 export default{
   props: ["func", "inputNum"],
-  methods:{
-    updateFuncMode(){
-      this.$emit("func-click", this.func)
-    },
+  computed:{
     //動的にクラスを付与（Cボタンの非活性）
     disabledBtn(){
       if(!this.inputNum && this.func === 'C'){ return "disabled" }
     }
+  },
+  methods:{
+    updateFuncMode(){
+      this.$emit("func-click", this.func)
+    },
   }
 }
 </script>

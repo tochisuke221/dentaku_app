@@ -1,6 +1,6 @@
 <template>
   <div class="display-result">
-    <h3>
+    <h3 style="margin: 0">
       {{ displayNumber }}
     </h3>
   </div>
@@ -25,17 +25,23 @@ function fixedResult(num){
   if(Math.abs(num) > 999999999){ return parseFloat(num).toExponential(0) }
  
 //  const numLength = num[0] === '-' ? 10 : 9
- return parseFloat(num).toLocaleString()
+ return parseFloat(num).toLocaleString( undefined, { maximumFractionDigits: [8] })
 }
 
 // 入力値を表示
 function fixedInputNum(num){
-  if(num){
-    // 小数点対応
-    if(Math.abs(num) < 1 ){ return num }
-    // const numLength = num[0] === '-' ? 10 : 9
-    return parseFloat(num).toLocaleString()
-  }
+  if(!num) return 
+  // 小数点対応
+  if(Math.abs(num) < 1 ){ return num }
+  if(num.includes('.')){ return joinIntegerToSmallNum(num) }
+
+  return parseFloat(num).toLocaleString()
+}
+
+function joinIntegerToSmallNum(num){
+  const numParts = num.split('.')
+
+  return parseFloat(numParts[0]).toLocaleString() + '.' + numParts[1]
 }
 
 // 乗除の途中結果を表示
@@ -46,7 +52,7 @@ function fixedPriorityCalcResult(num){
     //大きい数字対応
     if(Math.abs(num) > 999999999){ return parseFloat(num).toExponential(0) }
     
-    return parseFloat(num).toLocaleString()
+    return parseFloat(num).toLocaleString( undefined, { maximumFractionDigits: [8] })
   }
 }
 
@@ -72,7 +78,7 @@ function trimmingZero(str){
   .display-result{
     font-size: 23px;
     line-height: 60px;
-    width: 220px;
+    width: 200px;
     padding: 0 10px;
     height: 60px;
     background: black;

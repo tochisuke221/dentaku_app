@@ -5,6 +5,7 @@
           電卓
         </a>
       </div>
+      <p id="warning" :class="addWarning" style="visibility: hidden;">注意：次の桁で最大桁数になります</p>
       <DisplayResult :result="result" :inputNum="inputNum" :funcMode="funcMode" :priorityCalcResult="priorityCalcResult"></DisplayResult>
     <div class="wrapper">
       <!-- 1行目 -->
@@ -59,6 +60,11 @@ export default {
   data(){
     return initialState()
   },
+  computed: {
+    addWarning(){
+      if(this.inputNum.replace(/[^0-9]/g, '').length === 8) return "warning"
+    },
+  },
   methods: {
     updateVariableNums(e){
       // 最終計算符号が = または ACの時は全変数を初期化
@@ -104,23 +110,6 @@ export default {
       // 初期化
       this.result = "0"
       this.funcMode = "+"
-
-    // if(!this.inputNum){
-    //     if((isPriorityCalc(e)) && !this.priorityCalcResult){
-    //       if(this.result){
-    //         this.priorityCalcResult = this.result
-    //         this.result = "0"
-    //       }else{
-    //         this.priorityCalcResult = "0"
-    //       }
-    //       this.priorityFuncMode = e
-    //       return
-    //     }
-    //     if(e === '×' || e === '÷') {
-    //       return this.priorityFuncMode = e
-    //     }
-    //     return this.funcMode = e
-    //   }
     },
 
 
@@ -225,13 +214,26 @@ function isPriorityCalc(code){
   text-align: center;
   font-weight: bold;
 }
+
+#warning{
+  text-align: center;
+  font-size: 10px;
+  padding: 0;
+  margin: 0px 0 5px
+}
+
+.warning{
+  visibility: visible !important;
+  color:red;
+}
+
 button {
   background: green;
 }
 .wrapper {
   background: black;
   opacity: 0.9;
-  width:230px;
+  width:210px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   row-gap: 10px;

@@ -47,6 +47,7 @@ function joinIntegerToSmallNum(num){
 
 // 乗除の途中結果を表示
 function fixedPriorityCalcResult(num){
+  if(!isFinite(num)){ return  "0" }
   if(num){
     //小数点対応
     if(Math.abs(num) < 1){ return fixSmallNum(num)  }
